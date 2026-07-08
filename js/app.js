@@ -642,14 +642,22 @@ async function handleEditNota(e) {
 // ============================================
 
 async function openSettings() {
+  const apiKey = await getApiKey() || '';
   const pixKey = await getConfig('pixKey') || '';
   const pixName = await getConfig('pixName') || '';
   const pixCity = await getConfig('pixCity') || 'SAO PAULO';
+  if (document.getElementById('input-api-key')) document.getElementById('input-api-key').value = apiKey;
   if (document.getElementById('input-pix-key')) document.getElementById('input-pix-key').value = pixKey;
   if (document.getElementById('input-pix-name')) document.getElementById('input-pix-name').value = pixName;
   if (document.getElementById('input-pix-city')) document.getElementById('input-pix-city').value = pixCity;
 
   navigateTo('screen-settings');
+}
+
+async function handleSaveApiKey() {
+  const key = document.getElementById('input-api-key').value.trim();
+  await setApiKey(key);
+  showToast('Conexão IA salva com sucesso!');
 }
 
 async function handleSavePix() {

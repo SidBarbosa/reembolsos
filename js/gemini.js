@@ -65,6 +65,27 @@ async function analyzeReceipt(imageBase64, apiKey) {
     }
   };
 
+  // Se a chave configurada for uma URL (Cloudflare Worker seguro)
+  if (apiKey.startsWith('http://') || apiKey.startsWith('https://')) {
+    const response = await fetch(apiKey, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData?.error || `Erro no servidor Worker (${response.status})`);
+    }
+
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) {
+      throw new Error('Não foi possível analisar a nota. Tente com uma foto mais clara.');
+    }
+    return parseGeminiResponse(text);
+  }
+
   let lastErrorMsg = '';
   for (let attempt = 0; attempt < GEMINI_MODELS.length; attempt++) {
     const modelName = GEMINI_MODELS[(currentGeminiModelIndex + attempt) % GEMINI_MODELS.length];
