@@ -204,19 +204,18 @@
       <h1 style="flex:1;font-size:1.25rem;">Configurações</h1>
     </div>
 
-    <!-- IA Section (Worker URL ou API Key) -->
+    <!-- IA Section (Discreet) -->
     <div class="form-group">
       <label class="form-label" style="display: flex; align-items: center; gap: 8px;">
-        <span>🤖 Inteligência Artificial (OCR de Notas Fiscais)</span>
+        <span>⚡ Servidor de Processamento</span>
       </label>
       <div style="background: var(--card-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
         <div>
-          <label class="form-label" style="font-size:0.8rem;" for="input-api-key">URL do Cloudflare Worker (ou Chave da API Gemini)</label>
-          <input type="text" id="input-api-key" class="form-input" placeholder="Ex: https://caixinha-ocr.seu-usuario.workers.dev">
-          <p class="text-tertiary" style="font-size:0.75rem; margin-top:4px;">Cole aqui o link do seu Worker ou a sua chave do Google AI Studio.</p>
+          <label class="form-label" style="font-size:0.8rem;" for="input-api-key">Endpoint / Credencial</label>
+          <input type="password" id="input-api-key" class="form-input" placeholder="Insira o endereço ou credencial de serviço...">
         </div>
         <button type="button" class="btn btn-primary btn-sm" onclick="handleSaveApiKey()">
-          Salvar Conexão IA
+          Salvar Conexão
         </button>
       </div>
     </div>

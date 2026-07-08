@@ -668,7 +668,7 @@ async function openSettings() {
 async function handleSaveApiKey() {
   const key = document.getElementById('input-api-key').value.trim();
   await setApiKey(key);
-  showToast('Conexão IA salva com sucesso!');
+  showToast('Credencial/Servidor salvo com sucesso!');
 }
 
 async function handleSavePix() {
