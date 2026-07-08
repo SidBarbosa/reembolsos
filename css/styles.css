@@ -153,11 +153,26 @@ h4 { font-size: 1rem; }
   }
 }
 
-/* --- Header --- */
+/* --- Header & Logos --- */
+.home-logo {
+  max-height: 28px;
+  max-width: 90px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.header-logo-mini {
+  max-height: 24px;
+  max-width: 75px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .screen-header {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border);
@@ -165,6 +180,7 @@ h4 { font-size: 1rem; }
 
 .screen-header h1 {
   flex: 1;
+  min-width: 140px;
 }
 
 .btn-back {
@@ -293,6 +309,24 @@ h4 { font-size: 1rem; }
 
 /* --- Mobile Overrides (< 480px) --- */
 @media (max-width: 480px) {
+  .home-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .home-header > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .home-logo {
+    max-height: 22px;
+    max-width: 70px;
+  }
+
   .btn-label-desktop {
     display: none;
   }
