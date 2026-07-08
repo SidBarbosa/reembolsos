@@ -1,19 +1,7 @@
-// ============================================
-// CaixinhaApp — Cloudflare Worker (Proxy Seguro para OCR Gemini)
-// ============================================
-//
-// COMO USAR NO CLOUDFLARE WORKERS:
-// 1. Crie um Worker em https://workers.cloudflare.com
-// 2. Cole este código no arquivo worker.js do painel
-// 3. Vá em Settings > Variables e adicione a variável secreta:
-//    GEMINI_API_KEY = "sua_chave_do_google_ai_aqui"
-// 4. (Opcional) Altere ALLOWED_ORIGIN abaixo para o seu link do GitHub Pages
-
-const ALLOWED_ORIGIN = '*'; // Ex: 'https://seu-usuario.github.io'
+const ALLOWED_ORIGIN = '*'; 
 
 export default {
   async fetch(request, env) {
-    // 1. Tratar CORS Preflight (OPTIONS)
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
@@ -24,7 +12,6 @@ export default {
       });
     }
 
-    // 2. Permitir apenas método POST na rota /api/ocr
     if (request.method !== 'POST') {
       return new Response(JSON.stringify({ error: 'Método não permitido' }), {
         status: 405,
@@ -41,24 +28,49 @@ export default {
         );
       }
 
-      // Recebe o body enviado pelo front-end (base64 da imagem ou prompt)
       const payload = await request.json();
 
-      // Chamada oficial segura ao Google Gemini 1.5 Flash
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      // Lista de modelos com rodízio automático e fallback
+      const GEMINI_MODELS = [
+        'gemini-2.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-3.5-flash',
+        'gemini-flash-latest',
+        'gemini-2.5-flash',
+        'gemini-1.5-flash'
+      ];
 
-      const geminiResponse = await fetch(geminiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      let lastResult = null;
+      let lastStatus = 500;
 
-      const result = await geminiResponse.json();
+      for (const modelName of GEMINI_MODELS) {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
-      return new Response(JSON.stringify(result), {
-        status: geminiResponse.status,
-        headers: getCorsHeaders(),
-      });
+        const geminiResponse = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        lastStatus = geminiResponse.status;
+
+        // Se deu erro de cota (429) ou modelo não encontrado (404), tenta o próximo modelo da lista
+        if (lastStatus === 429 || lastStatus === 404) {
+          continue;
+        }
+
+        lastResult = await geminiResponse.json();
+        return new Response(JSON.stringify(lastResult), {
+          status: lastStatus,
+          headers: getCorsHeaders(),
+        });
+      }
+
+      // Se nenhum modelo respondeu com sucesso
+      return new Response(
+        JSON.stringify(lastResult || { error: 'Todos os modelos falharam ou excederam cota.' }),
+        { status: lastStatus, headers: getCorsHeaders() }
+      );
     } catch (error) {
       return new Response(
         JSON.stringify({ error: 'Erro no servidor Worker', details: error.message }),
