@@ -124,13 +124,23 @@
     </div>
 
     <!-- Image Upload Area -->
-    <div id="nota-image-upload-area" class="image-upload-area" onclick="triggerImageInput()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-      <p>Toque para tirar foto ou escolher imagem</p>
+    <div id="nota-image-upload-area" class="image-upload-area" style="cursor: default; padding: 28px 16px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:44px;height:44px;color:var(--accent);"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+      <p style="margin: 6px 0; font-weight: 600; font-size: 1rem;">Adicionar Nota Fiscal</p>
       <span class="upload-hint">A IA analisará a nota automaticamente</span>
+
+      <div style="display: flex; gap: 10px; margin-top: 16px; width: 100%; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="triggerCameraInput()" style="display: flex; align-items: center; gap: 6px;">
+          📷 Tirar Foto
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="triggerGalleryInput()" style="display: flex; align-items: center; gap: 6px;">
+          🖼️ Escolher Arquivo
+        </button>
+      </div>
     </div>
 
-    <input type="file" id="nota-image-input" accept="image/*" capture="environment" onchange="handleImageSelected(event)" style="display:none;">
+    <input type="file" id="nota-image-input-camera" accept="image/*" capture="environment" onchange="handleImageSelected(event)" style="display:none;">
+    <input type="file" id="nota-image-input-gallery" accept="image/*" onchange="handleImageSelected(event)" style="display:none;">
 
     <!-- Image Preview -->
     <div id="nota-image-preview-container" class="image-preview-container hidden">

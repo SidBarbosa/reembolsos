@@ -482,7 +482,18 @@ function openAddNota() {
 }
 
 function triggerImageInput() {
-  document.getElementById('nota-image-input').click();
+  const el = document.getElementById('nota-image-input-gallery') || document.getElementById('nota-image-input');
+  if (el) el.click();
+}
+
+function triggerCameraInput() {
+  const el = document.getElementById('nota-image-input-camera');
+  if (el) el.click();
+}
+
+function triggerGalleryInput() {
+  const el = document.getElementById('nota-image-input-gallery');
+  if (el) el.click();
 }
 
 async function handleImageSelected(event) {
