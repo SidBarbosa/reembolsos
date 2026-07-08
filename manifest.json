@@ -2,21 +2,24 @@
   "name": "Caixinha — Controle de Obras & Reembolsos",
   "short_name": "Caixinha",
   "description": "Gestão inteligente de notas fiscais, custos de obras e relatórios PDF de reembolsos com QR Code Pix.",
-  "start_url": ".",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "assets/logo.jpeg",
+      "src": "./assets/logo.jpeg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
-      "src": "assets/logo.jpeg",
+      "src": "./assets/logo.jpeg",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }
