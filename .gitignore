@@ -1,0 +1,10 @@
+# Environment variables and secrets
+.env
+*.env
+.env.local
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
