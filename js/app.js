@@ -88,19 +88,23 @@ async function renderHome() {
   }
 
   container.innerHTML = obras.map(obra => `
-    <div class="card" onclick="openObra(${obra.id})">
-      <div class="card-title">${escapeHtml(obra.nome)}</div>
-      <div class="card-subtitle">${obra.cliente ? escapeHtml(obra.cliente) : 'Sem cliente definido'}</div>
-      <div class="card-value">R$ ${formatCurrency(obra.total)}</div>
-      <div class="card-footer">
-        <div style="display:flex;align-items:center;gap:8px;">
+    <div class="card" onclick="openObra(${obra.id})" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+        <div style="flex: 1; min-width: 0;">
+          <div class="card-title" style="word-break: break-word; margin-bottom: 2px;">${escapeHtml(obra.nome)}</div>
+          <div class="card-subtitle" style="word-break: break-word;">${obra.cliente ? escapeHtml(obra.cliente) : 'Sem cliente definido'}</div>
+        </div>
+        <div class="card-value" style="margin-top: 0; text-align: right; white-space: nowrap; font-size: 1.3rem; flex-shrink: 0;">R$ ${formatCurrency(obra.total)}</div>
+      </div>
+      <div class="card-footer" style="margin-top: 2px; padding-top: 12px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <span class="card-badge ${obra.status === 'ativa' ? 'badge-active' : 'badge-finished'}">
             <span class="status-dot ${obra.status === 'ativa' ? 'active' : 'inactive'}"></span>
             ${obra.status === 'ativa' ? 'Ativa' : 'Finalizada'}
           </span>
           <span class="text-tertiary" style="font-size:0.8rem">${obra.notasCount} nota${obra.notasCount !== 1 ? 's' : ''}</span>
         </div>
-        <div class="card-actions" onclick="event.stopPropagation()">
+        <div class="card-actions" onclick="event.stopPropagation()" style="display: flex; gap: 8px; margin-left: auto;">
           <button class="btn-card-action" onclick="showEditObraModal(${obra.id})" title="Editar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </button>
@@ -269,30 +273,36 @@ function renderNotasFiltered() {
     }
 
     return `
-      <div class="nota-item" style="${nota.reembolsado ? 'opacity: 0.75;' : ''}">
-        ${thumbSrc
-          ? `<img class="nota-thumb" src="${thumbSrc}" alt="Nota" onclick="viewImage('${thumbSrc}')">`
-          : `<div class="nota-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-tertiary)">${ICONS.receipt}</div>`
-        }
-        <div class="nota-info">
-          <div class="nota-loja">${escapeHtml(nota.loja || 'Loja não identificada')}</div>
-          <div class="nota-desc">${escapeHtml(nota.itens ? (nota.descricao ? `${nota.itens} — ${nota.descricao}` : nota.itens) : nota.descricao || '')}</div>
-          <div class="nota-meta" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <div class="nota-item" style="${nota.reembolsado ? 'opacity: 0.75;' : ''} display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; width: 100%;">
+          <div style="display: flex; gap: 12px; flex: 1; min-width: 0;">
+            ${thumbSrc
+              ? `<img class="nota-thumb" src="${thumbSrc}" alt="Nota" onclick="viewImage('${thumbSrc}')">`
+              : `<div class="nota-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-tertiary)">${ICONS.receipt}</div>`
+            }
+            <div class="nota-info" style="flex: 1; min-width: 0;">
+              <div class="nota-loja" style="word-break: break-word; font-weight: 600;">${escapeHtml(nota.loja || 'Loja não identificada')}</div>
+              <div class="nota-desc" style="word-break: break-word;">${escapeHtml(nota.itens ? (nota.descricao ? `${nota.itens} — ${nota.descricao}` : nota.itens) : nota.descricao || '')}</div>
+            </div>
+          </div>
+          <div class="nota-valor" style="text-align: right; white-space: nowrap; font-size: 1.15rem; font-weight: 700; flex-shrink: 0;">R$ ${formatCurrency(nota.valor || 0)}</div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 10px;">
+          <div class="nota-meta" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;">
             <span>${formatDateDisplay(nota.data)}</span>
             <button type="button" onclick="event.stopPropagation(); handleToggleReembolso(${nota.id}, ${!nota.reembolsado})" 
               style="background: ${nota.reembolsado ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}; border: 1px solid ${nota.reembolsado ? 'var(--accent)' : '#f59e0b'}; color: ${nota.reembolsado ? 'var(--accent-light)' : '#f59e0b'}; border-radius: 12px; padding: 2px 8px; font-size: 0.72rem; cursor: pointer; font-weight: 600;">
               ${nota.reembolsado ? '🟢 Já Reembolsada' : '🟡 Pendente'}
             </button>
           </div>
-        </div>
-        <div class="nota-valor">R$ ${formatCurrency(nota.valor || 0)}</div>
-        <div class="nota-actions" style="display: flex; gap: 6px;">
-          <button class="btn btn-icon btn-secondary btn-sm" onclick="event.stopPropagation(); showEditNotaModal(${nota.id})" title="Editar Nota">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-          </button>
-          <button class="btn btn-icon btn-secondary btn-sm" onclick="event.stopPropagation(); confirmDeleteNota(${nota.id})" title="Excluir" style="color: var(--danger-light);">
-            ${ICONS.trash}
-          </button>
+          <div class="nota-actions" style="display: flex; gap: 6px; margin-left: auto;">
+            <button class="btn btn-icon btn-secondary btn-sm" onclick="event.stopPropagation(); showEditNotaModal(${nota.id})" title="Editar Nota">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="btn btn-icon btn-secondary btn-sm" onclick="event.stopPropagation(); confirmDeleteNota(${nota.id})" title="Excluir" style="color: var(--danger-light);">
+              ${ICONS.trash}
+            </button>
+          </div>
         </div>
       </div>
     `;
